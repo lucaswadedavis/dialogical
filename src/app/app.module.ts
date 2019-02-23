@@ -5,6 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RulesComponent } from './rules/rules.component';
 
+// Angular Material Components
+import {MatFormFieldModule} from '@angular/material/form-field';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -12,7 +15,8 @@ import { RulesComponent } from './rules/rules.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatFormFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
