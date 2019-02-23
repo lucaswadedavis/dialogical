@@ -1,0 +1,38 @@
+<div class="rule-container">
+  <div class="left-area">
+    <h3>Criteria</h3>
+    <div class="debug">{{ rule.criteria | json }}</div>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Criterion">
+    </mat-form-field>
+  </div>
+  <div class="center-area">
+    <h3>Responses</h3>
+    <div class="debug">{{ rule.responses | json }}</div>
+    <mat-form-field class="full-width" *ngFor="let response of rule.responses">
+      <textarea matInput value="{{ response.text }}">
+      </textarea>
+    </mat-form-field>
+    <div>
+      <mat-form-field  class="full-width">
+        <textarea matInput placeholder="Next Response"></textarea>
+      </mat-form-field>
+    </div>
+    <h3 class="suggestions">Suggestions</h3>
+    <div class="debug">{{ rule.suggestions | json }}</div>
+    <mat-form-field class="full-width">
+      <input matInput [formControl]="suggestions" placeholder="Suggestions">
+    </mat-form-field>
+  </div>
+  <div class="right-area">
+    <h3>Updates</h3>
+    <div class="debug">{{ rule.updates | json }}</div>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Update">
+    </mat-form-field>
+
+  </div>
+
+</div>
+
+

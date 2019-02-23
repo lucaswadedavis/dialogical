@@ -1,0 +1,11 @@
+h1 {
+  letter-spacing: 4px;
+  background-color: #555;
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}
+
+.content-container {
+  margin: 20px;
+}

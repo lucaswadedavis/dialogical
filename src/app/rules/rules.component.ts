@@ -4,10 +4,10 @@ const Id = () => {
   return 'id-' + (Math.random() * 1000000 | 0);
 }
 
-const state = {
-  isWelcome: Boolean,
-  numberOfTurns: Number
-};
+const keys = [
+  {name: 'isWelcome', kind: Boolean},
+  {name: 'numberOfTurns', kind: Number},
+];
 
 interface Rule {
   criteria: any;
@@ -29,17 +29,16 @@ class Rule {
       criterion(key, comparitor, value) {
         const id = Id();
         criteria.push({ id, key, comparitor, value});
-        console.log(root);
         return root;
       },
-      response(response) {
+      response(text) {
         const id = Id();
-        responses.push({ id, response });
+        responses.push({ id, text });
         return root;
       },
-      suggestion(suggestion) {
+      suggestion(text) {
         const id = Id();
-        suggestions.push({ id, suggestion });
+        suggestions.push({ id, text });
         return root;
       },
       update(key, operator, value) {
@@ -76,6 +75,7 @@ export class RulesComponent implements OnInit {
   sectionTitle = 'Rules';
 
   rules = rules;
+  keys = keys;
 
   constructor() { }
 

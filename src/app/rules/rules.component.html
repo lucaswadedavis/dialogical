@@ -1,24 +1,5 @@
 <h2>{{ sectionTitle }}</h2>
-
-<div *ngFor="let rule of rules" class="rule-container">
-  <div class="left-area">
-    <h3>Criteria</h3>
-    <div>{{ rule.criteria | json }}</div>
-    <mat-form-field>
-      <input matInput placeholder="Input">
-    </mat-form-field>
-  </div>
-  <div class="center-area">
-    <h3>Responses</h3>
-    <div>{{ rule.responses | json }}</div>
-    <h3>Suggestions</h3>
-    <div>{{ rule.suggestions | json }}</div>
-  </div>
-  <div class="right-area">
-    <h3>Updates</h3>
-    <div>{{ rule.updates | json }}</div>
-  </div>
-
+<div *ngFor="let rule of rules">
+  <app-rule [rule]=rule [keys]=keys ></app-rule>
 </div>
-
 
