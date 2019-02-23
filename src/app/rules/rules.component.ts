@@ -9,6 +9,14 @@ const state = {
   numberOfTurns: Number
 };
 
+interface Rule {
+  criteria: any;
+  responses: any;
+  suggestions: any;
+  updates: any;
+  add: any;
+}
+
 class Rule {
   constructor() {
     const root = this;
