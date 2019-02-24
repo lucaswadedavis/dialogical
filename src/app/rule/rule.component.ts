@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormArray } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-rule',
@@ -8,25 +8,41 @@ import { FormControl, FormArray } from '@angular/forms';
 })
 export class RuleComponent implements OnInit {
 
-  suggestions = new FormControl("");
+  ruleFormGroup: FormGroup;
   @Input() rule: any;
   @Input() keys: any;
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.onChanges();
+    this.setupSuggestions();
+    this.onSuggestionChanges();
   }
 
-  onChanges(): void {
-    this.suggestions.valueChanges.subscribe(val => {
-      const { suggestions } = this.rule;
-      const numberOfEmptySuggestions= suggestions.filter(suggestion => {
-        return !suggestion.text;
-      }).length;
+  setupSuggestions() {
+    const sugs = this.rule.suggestions.map(sug => {
+      return this.createSuggestion(sug.text);
+    });
+    sugs.push(this.createSuggestion());
+    this.ruleFormGroup = this.formBuilder.group({
+      suggestions: this.formBuilder.array(sugs),
+    });
+  }
+
+  createSuggestion(text=""): FormGroup {
+    const suggestion = this.rule.add.suggestion(text);
+    return this.formBuilder.group(suggestion);
+  }
+
+  onSuggestionChanges(): void {
+    const suggestions = this.ruleFormGroup.get('suggestions') as FormArray;
+    suggestions.valueChanges.subscribe((val) => {
+      const numberOfEmptySuggestions = suggestions.value
+        .filter(sug => !sug.text).length;
       if (numberOfEmptySuggestions === 0) {
-        this.rule.add.suggestion('');
+        suggestions.push(this.createSuggestion());
       }
     });
   }
+
 }

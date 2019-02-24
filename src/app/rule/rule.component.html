@@ -1,4 +1,4 @@
-<div class="rule-container">
+<div class="rule-container" [formGroup]="ruleFormGroup">
   <div class="left-area">
     <h3>Criteria</h3>
     <div class="debug">{{ rule.criteria | json }}</div>
@@ -20,9 +20,16 @@
     </div>
     <h3 class="suggestions">Suggestions</h3>
     <div class="debug">{{ rule.suggestions | json }}</div>
-    <mat-form-field class="full-width">
-      <input matInput [formControl]="suggestions" placeholder="Suggestions">
-    </mat-form-field>
+    <div>
+      <mat-form-field
+        class="full-width"
+        formArrayName="suggestions"
+        *ngFor="let suggestion of ruleFormGroup.get('suggestions').controls; let i = index;">
+        <div [formGroupName]="i">
+          <input matInput formControlName="text" placeholder="Suggestion">
+        </div>
+      </mat-form-field>
+    </div>
   </div>
   <div class="right-area">
     <h3>Updates</h3>

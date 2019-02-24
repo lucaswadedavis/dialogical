@@ -28,23 +28,27 @@ class Rule {
     this.add = {
       criterion(key, comparitor, value) {
         const id = Id();
-        criteria.push({ id, key, comparitor, value});
-        return root;
+        const criterion = { id, key, comparitor, value};
+        criteria.push(criterion);
+        return criterion;
       },
       response(text) {
         const id = Id();
-        responses.push({ id, text });
-        return root;
+        const response = { id, text };
+        responses.push(response);
+        return response;
       },
       suggestion(text) {
         const id = Id();
-        suggestions.push({ id, text });
-        return root;
+        const suggestion = { id, text };
+        suggestions.push(suggestion);
+        return suggestion;
       },
       update(key, operator, value) {
         const id = Id();
-        updates.push({ id, key, operator, value });
-        return root;
+        const update = { id, key, operator, value };
+        updates.push(update);
+        return update;
       },
     };
 
