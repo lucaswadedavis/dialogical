@@ -3,6 +3,12 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 const parseCriterion = (text="") => {
   // make this better
+  const [key="", comparitor="", value=''] = text.split(' ');
+  return {key, comparitor, value, text};
+}
+
+const parseUpdate = (text="") => {
+  // make this better
   const [key="", operator="", value=''] = text.split(' ');
   return {key, operator, value, text};
 }
@@ -14,6 +20,7 @@ const parseCriterion = (text="") => {
 })
 export class RuleComponent implements OnInit {
 
+  const debug = false;
   ruleFormGroup: FormGroup;
   @Input() rule: any;
   @Input() keys: any;
@@ -25,6 +32,7 @@ export class RuleComponent implements OnInit {
     this.onCriteriaChanges();
     this.onResponseChanges();
     this.onSuggestionChanges();
+    this.onUpdateChanges();
   }
 
   setupForm() {
@@ -40,14 +48,18 @@ export class RuleComponent implements OnInit {
       return this.createSuggestion(sug.text);
     });
     suggestions.push(this.createSuggestion());
+    const updates = this.rule.updates.map(update => {
+      return this.createUpdateFromJSON(update);
+    });
+    updates.push(this.createUpdateFromString());
     this.ruleFormGroup = this.formBuilder.group({
       criteria: this.formBuilder.array(criteria),
       responses: this.formBuilder.array(responses),
       suggestions: this.formBuilder.array(suggestions),
+      updates: this.formBuilder.array(updates),
     });
   }
 
-  //////////////////////////////
   createResponse(text=""): FormGroup {
     const response = this.rule.add.response(text);
     return this.formBuilder.group(response);
@@ -63,9 +75,7 @@ export class RuleComponent implements OnInit {
       }
     });
   }
-  ///////////////////////////////////////////
 
-  //////////////////////////////
   createSuggestion(text=""): FormGroup {
     const suggestion = this.rule.add.suggestion(text);
     return this.formBuilder.group(suggestion);
@@ -81,8 +91,6 @@ export class RuleComponent implements OnInit {
       }
     });
   }
-  ///////////////////////////////////////////
-  //////////////////////////////
 
   createCriterionFromString(rawCriterion): FormGroup {
     const {key, comparitor, value} = parseCriterion(rawCriterion);
@@ -90,11 +98,33 @@ export class RuleComponent implements OnInit {
     return this.formBuilder.group(criterion);
   }
 
-
   createCriterionFromJSON(criterion): FormGroup {
     const {key, comparitor, value} = criterion;
     this.rule.add.criterion(key, comparitor, value);
     return this.formBuilder.group(criterion);
+  }
+
+  onUpdateChanges(): void {
+    const updates = this.ruleFormGroup.get('updates') as FormArray;
+    updates.valueChanges.subscribe((val) => {
+      const numberOfEmptyUpdates = updates.value
+        .filter(update => !(update.text.trim())).length;
+      if (numberOfEmptyUpdates === 0) {
+        updates.push(this.createUpdateFromString());
+      }
+    });
+  }
+
+  createUpdateFromString(text): FormGroup {
+    const {key, operator, value} = parseUpdate(text);
+    const update = this.rule.add.update(key, operator, value);
+    return this.formBuilder.group(update);
+  }
+
+  createUpdateFromJSON(update): FormGroup {
+    const {key, operator, value} = update;
+    this.rule.add.update(key, operator, value);
+    return this.formBuilder.group(update);
   }
 
   onCriteriaChanges(): void {
@@ -107,6 +137,5 @@ export class RuleComponent implements OnInit {
       }
     });
   }
-  ///////////////////////////////////////////
 
 }

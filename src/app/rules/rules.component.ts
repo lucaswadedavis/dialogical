@@ -29,7 +29,7 @@ class Rule {
       criterion(key='', comparitor='', value='') {
         if (typeof key !== 'string') debugger;
         const id = Id();
-        const text = [key, comparitor, value].join(" ");
+        const text = [key, comparitor, value].join(" ").trim();
         const criterion = { id, key, comparitor, value, text};
         criteria.push(criterion);
         return criterion;
@@ -48,7 +48,7 @@ class Rule {
       },
       update(key='', operator='', value='') {
         const id = Id();
-        const text = [key, operator, value].join(" ");
+        const text = [key, operator, value].join(" ").trim();
         const update = { id, key, operator, value, text };
         updates.push(update);
         return update;

@@ -1,9 +1,8 @@
 <div class="rule-container" [formGroup]="ruleFormGroup">
+
   <div class="left-area">
-
-
     <h3>Criteria</h3>
-    <div class="debug">{{ rule.criteria | json }}</div>
+    <div *ngIf="debug" class="debug">{{ rule.criteria | json }}</div>
     <mat-form-field
       class="full-width"
       formArrayName="criteria"
@@ -12,16 +11,12 @@
         <input matInput formControlName="text" placeholder="Criterion">
       </div>
     </mat-form-field>
-
-
   </div>
 
 
   <div class="center-area">
-
-
     <h3>Responses</h3>
-    <div class="debug">{{ rule.responses | json }}</div>
+    <div *ngIf="debug" class="debug">{{ rule.responses | json }}</div>
     <mat-form-field
       class="full-width"
       formArrayName="responses"
@@ -30,10 +25,8 @@
         <input matInput formControlName="text" placeholder="Response">
       </div>
     </mat-form-field>
-
-
     <h3 class="suggestions">Suggestions</h3>
-    <div class="debug">{{ rule.suggestions | json }}</div>
+    <div *ngIf="debug" class="debug">{{ rule.suggestions | json }}</div>
     <mat-form-field
       class="full-width"
       formArrayName="suggestions"
@@ -42,17 +35,22 @@
         <input matInput formControlName="text" placeholder="Suggestion">
       </div>
     </mat-form-field>
-
-
   </div>
+
+
   <div class="right-area">
     <h3>Updates</h3>
-    <div class="debug">{{ rule.updates | json }}</div>
-    <mat-form-field class="full-width">
-      <input matInput placeholder="Update">
+    <div *ngIf="debug" class="debug">{{ rule.updates | json }}</div>
+    <mat-form-field
+      class="full-width"
+      formArrayName="updates"
+      *ngFor="let update of ruleFormGroup.get('updates').controls; let i = index;">
+      <div [formGroupName]="i">
+        <input matInput formControlName="text" placeholder="Update">
+      </div>
     </mat-form-field>
-
   </div>
+
 
 </div>
 
