@@ -1,11 +1,22 @@
 <div class="rule-container" [formGroup]="ruleFormGroup">
   <div class="left-area">
+
+
     <h3>Criteria</h3>
     <div class="debug">{{ rule.criteria | json }}</div>
-    <mat-form-field class="full-width">
-      <input matInput placeholder="Criterion">
+    <mat-form-field
+      class="full-width"
+      formArrayName="criteria"
+      *ngFor="let criterion of ruleFormGroup.get('criteria').controls; let i = index;">
+      <div [formGroupName]="i">
+        <input matInput formControlName="text" placeholder="Criterion">
+      </div>
     </mat-form-field>
+
+
   </div>
+
+
   <div class="center-area">
     <h3>Responses</h3>
     <div class="debug">{{ rule.responses | json }}</div>
@@ -18,6 +29,8 @@
         <textarea matInput placeholder="Next Response"></textarea>
       </mat-form-field>
     </div>
+
+
     <h3 class="suggestions">Suggestions</h3>
     <div class="debug">{{ rule.suggestions | json }}</div>
     <div>
@@ -30,6 +43,8 @@
         </div>
       </mat-form-field>
     </div>
+
+
   </div>
   <div class="right-area">
     <h3>Updates</h3>

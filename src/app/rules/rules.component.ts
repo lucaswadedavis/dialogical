@@ -26,9 +26,11 @@ class Rule {
     const updates = this.updates = [];
 
     this.add = {
-      criterion(key, comparitor, value) {
+      criterion(key='', comparitor='', value='') {
+        if (typeof key !== 'string') debugger;
         const id = Id();
-        const criterion = { id, key, comparitor, value};
+        const text = [key, comparitor, value].join(" ");
+        const criterion = { id, key, comparitor, value, text};
         criteria.push(criterion);
         return criterion;
       },
@@ -44,9 +46,10 @@ class Rule {
         suggestions.push(suggestion);
         return suggestion;
       },
-      update(key, operator, value) {
+      update(key='', operator='', value='') {
         const id = Id();
-        const update = { id, key, operator, value };
+        const text = [key, operator, value].join(" ");
+        const update = { id, key, operator, value, text };
         updates.push(update);
         return update;
       },
