@@ -18,31 +18,30 @@
 
 
   <div class="center-area">
+
+
     <h3>Responses</h3>
     <div class="debug">{{ rule.responses | json }}</div>
-    <mat-form-field class="full-width" *ngFor="let response of rule.responses">
-      <textarea matInput value="{{ response.text }}">
-      </textarea>
+    <mat-form-field
+      class="full-width"
+      formArrayName="responses"
+      *ngFor="let response of ruleFormGroup.get('responses').controls; let i = index;">
+      <div [formGroupName]="i">
+        <input matInput formControlName="text" placeholder="Response">
+      </div>
     </mat-form-field>
-    <div>
-      <mat-form-field  class="full-width">
-        <textarea matInput placeholder="Next Response"></textarea>
-      </mat-form-field>
-    </div>
 
 
     <h3 class="suggestions">Suggestions</h3>
     <div class="debug">{{ rule.suggestions | json }}</div>
-    <div>
-      <mat-form-field
-        class="full-width"
-        formArrayName="suggestions"
-        *ngFor="let suggestion of ruleFormGroup.get('suggestions').controls; let i = index;">
-        <div [formGroupName]="i">
-          <input matInput formControlName="text" placeholder="Suggestion">
-        </div>
-      </mat-form-field>
-    </div>
+    <mat-form-field
+      class="full-width"
+      formArrayName="suggestions"
+      *ngFor="let suggestion of ruleFormGroup.get('suggestions').controls; let i = index;">
+      <div [formGroupName]="i">
+        <input matInput formControlName="text" placeholder="Suggestion">
+      </div>
+    </mat-form-field>
 
 
   </div>

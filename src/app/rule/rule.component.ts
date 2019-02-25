@@ -23,23 +23,47 @@ export class RuleComponent implements OnInit {
   ngOnInit() {
     this.setupForm();
     this.onCriteriaChanges();
+    this.onResponseChanges();
     this.onSuggestionChanges();
   }
-  //////////////////////////////
+
   setupForm() {
-    const suggestions = this.rule.suggestions.map(sug => {
-      return this.createSuggestion(sug.text);
-    });
-    suggestions.push(this.createSuggestion());
     const criteria = this.rule.criteria.map(criteria => {
       return this.createCriterionFromJSON(criteria);
     });
     criteria.push(this.createCriterionFromString());
+    const responses = this.rule.responses.map(res => {
+      return this.createResponse(res.text);
+    });
+    responses.push(this.createResponse());
+    const suggestions = this.rule.suggestions.map(sug => {
+      return this.createSuggestion(sug.text);
+    });
+    suggestions.push(this.createSuggestion());
     this.ruleFormGroup = this.formBuilder.group({
-      suggestions: this.formBuilder.array(suggestions),
       criteria: this.formBuilder.array(criteria),
+      responses: this.formBuilder.array(responses),
+      suggestions: this.formBuilder.array(suggestions),
     });
   }
+
+  //////////////////////////////
+  createResponse(text=""): FormGroup {
+    const response = this.rule.add.response(text);
+    return this.formBuilder.group(response);
+  }
+
+  onResponseChanges(): void {
+    const responses = this.ruleFormGroup.get('responses') as FormArray;
+    responses.valueChanges.subscribe((val) => {
+      const numberOfEmptyResponses = responses.value
+        .filter(res => !res.text).length;
+      if (numberOfEmptyResponses === 0) {
+        responses.push(this.createResponse());
+      }
+    });
+  }
+  ///////////////////////////////////////////
 
   //////////////////////////////
   createSuggestion(text=""): FormGroup {
