@@ -1,5 +1,17 @@
 const { Suggestions } = require('actions-on-google');
 const selectRandom = (arr) => arr[arr.length * Math.random() | 0];
+const Handlebars = require('handlebars');
+
+const interpolate = (res, context) => {
+  const template = Handlebars.compile(res);
+  return template(context);
+};
+
+/*
+ * TODOs
+ * - support string interpolation in the response strings
+ * - build a demo that shows how to disambiguate affirmations
+*/
 
 const states = {
   isWelcome: Boolean,
@@ -18,12 +30,12 @@ class Dialogical{
       this.dialogState = nextState;
       console.log('dialogState: \n', nextState, '\n');
       this.updateStateBeforeQuery(params);
-      const { rule } = this.pickRule();
+      const rule = this.pickRule();
       let response;
       if (!rule) {
-        return 'Bad news: no rule matched.';
+        return ['Bad news: no rule matched.'];
       }
-      response = [selectRandom(rule.responses)];
+      response = [interpolate(selectRandom(rule.responses), nextState)];
       if (rule.suggestions.length) {
         response.push(new Suggestions(rule.suggestions));
       }
@@ -41,7 +53,9 @@ class Dialogical{
       if (token !== 'dialogical') continue;
       if (!operator) this.dialogState[name] = params[key];
       if (operator === 'set') this.dialogState[name] = params[key];
+      if (operator === 'equal') this.dialogState[name] = params[key];
       if (operator === 'add') this.dialogState[name] += parseInt(params[key]);
+      if (operator === 'subtract') this.dialogState[name] -= parseInt(params[key]);
     }
   }
 
@@ -52,41 +66,56 @@ class Dialogical{
       let { state, operator, value } = updates[i];
       if (operator === '+') {
         if (dialogState[state] === undefined) dialogState[state] = 0;
-        dialogState[state] += parseInt(value); 
+        dialogState[state] += parseInt(value);
+        console.log('incremented!', parseInt(value), dialogState[state]);
+      }
+      if (operator === '-') {
+        if (dialogState[state] === undefined) dialogState[state] = 0;
+        dialogState[state] -= parseInt(value);
         console.log('incremented!', parseInt(value), dialogState[state]);
       }
       if (operator === '=') {
         // will also have to check state types here eventually
         if (dialogState[state] === undefined) dialogState[state] = value;
-        dialogState[state] = value; 
+        dialogState[state] = value;
       }
-
     }
-
     console.log('dialogState: ', dialogState);
   }
 
   pickRule() {
     const { dialogState, rules } = this;
-    return rules.map(rule => {
+    const bestMatch = rules.map(rule => {
         // all of these need to pass
         let count = 0;
         for (let i = 0; i < rule.criteria.length; i++) {
-          const criterion = rule.criteria[i];
+          let criterion = rule.criteria[i];
           let matched = false;
-          const { comparitor, state, value } = criterion;
+          let { comparitor, state, value } = criterion;
           if (comparitor === '=') {
-            if (dialogState[state] === value) count++;
-            matched = true;
+            if (dialogState[state] === value) {
+              count++;
+              matched = true;
+            }
           } else if (comparitor === '>') {
-            if (dialogState[state] > value) count++;
-            matched = true;
+            if (dialogState[state] > value) {
+              count++;
+              matched = true;
+            }
           } else if (comparitor === '<') {
-            if (dialogState[state] < value) count++;
-            matched = true;
+            if (dialogState[state] < value) {
+              count++;
+              matched = true;
+            }
+          } else if (comparitor === 'exists') {
+            if (dialogState[state]) {
+              count++;
+              matched = true;
+            }
           }
           // if ANY of the criteria don't match, this rule should not match
           if (!matched) {
+            console.log('no match found for ', rule.name);
             count = 0;
             break;
           }
@@ -94,6 +123,7 @@ class Dialogical{
       console.log('rule name: ', rule.name, 'count: ', count);
       return { count, rule };
     }).sort((a, b) => b.count - a.count)[0];
+    return bestMatch.count ? bestMatch.rule : null;
   }
 
 }
