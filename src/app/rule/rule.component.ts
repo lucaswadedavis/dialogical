@@ -20,7 +20,7 @@ const parseUpdate = (text="") => {
 })
 export class RuleComponent implements OnInit {
 
-  const debug = false;
+  debug = false;
   ruleFormGroup: FormGroup;
   @Input() rule: any;
   @Input() keys: any;
@@ -92,7 +92,7 @@ export class RuleComponent implements OnInit {
     });
   }
 
-  createCriterionFromString(rawCriterion): FormGroup {
+  createCriterionFromString(rawCriterion?): FormGroup {
     const {key, comparitor, value} = parseCriterion(rawCriterion);
     const criterion = this.rule.add.criterion(key, comparitor, value);
     return this.formBuilder.group(criterion);
@@ -115,7 +115,7 @@ export class RuleComponent implements OnInit {
     });
   }
 
-  createUpdateFromString(text): FormGroup {
+  createUpdateFromString(text=''): FormGroup {
     const {key, operator, value} = parseUpdate(text);
     const update = this.rule.add.update(key, operator, value);
     return this.formBuilder.group(update);
